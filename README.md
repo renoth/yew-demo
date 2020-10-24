@@ -6,7 +6,7 @@ pacman -S rustup
 rustup install stable
 rustup target add wasm32-unknown-unknown
 ```
-Now we compile lib.rs to warm
+Now we compile lib.rs to wasm
 ```
 wasm-pack build --target web --out-name wasm --out-dir ./static
 ```

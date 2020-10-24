@@ -1,5 +1,9 @@
+mod components;
+
 use wasm_bindgen::prelude::*;
 use yew::prelude::*;
+use yew::services::ConsoleService;
+use components::navbar::*;
 
 struct Model {
     link: ComponentLink<Self>,
@@ -13,14 +17,13 @@ enum Msg {
 impl Component for Model {
     type Message = Msg;
     type Properties = ();
+
     fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
         Self {
             link,
             value: 0,
         }
     }
-
-    rendered
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
@@ -38,14 +41,15 @@ impl Component for Model {
 
     fn view(&self) -> Html {
         html! {
-            <div>
-                <button onclick=self.link.callback(|_| Msg::AddOne)>{ "+1" }</button>
-                <p>{ self.value }</p>
-            </div>
+            <>
+                <Navbar/>
+                <div>
+                    <button onclick=self.link.callback(|_| Msg::AddOne)>{ "+1" }</button>
+                    <p>{ self.value }</p>
+                </div>
+            </>
         }
     }
-
-
 }
 
 #[wasm_bindgen(start)]
