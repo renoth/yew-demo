@@ -1,34 +1,45 @@
+#![recursion_limit="500"]
+
 mod components;
 
+use stdweb::web::{Location, window};
 use wasm_bindgen::prelude::*;
 use yew::prelude::*;
+use yew::virtual_dom::VNode;
 use yew::services::ConsoleService;
+use yew_router::{route::Route, service::RouteService, components::RouterAnchor, Switch, router::Router};
 use components::navbar::*;
+
 
 struct Model {
     link: ComponentLink<Self>,
-    value: i64,
+    route: Route<()>,
 }
 
-enum Msg {
-    AddOne,
+#[derive(Switch, Debug, Clone)]
+pub enum AppRoute {
+    #[to = "/page1/"]
+    Page1,
+    #[to = "/page2/"]
+    Page2,
+    #[to = "/page3/"]
+    Page3,
 }
 
 impl Component for Model {
-    type Message = Msg;
+    type Message = ();
     type Properties = ();
 
     fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
+        let route_service: RouteService<()> = RouteService::new();
+        let route = route_service.get_route();
         Self {
             link,
-            value: 0,
+            route,
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
-        match msg {
-            Msg::AddOne => self.value += 1
-        }
+    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
         true
     }
 
@@ -42,11 +53,29 @@ impl Component for Model {
     fn view(&self) -> Html {
         html! {
             <>
-                <Navbar/>
-                <div>
-                    <button onclick=self.link.callback(|_| Msg::AddOne)>{ "+1" }</button>
-                    <p>{ self.value }</p>
-                </div>
+                <nav class="navbar navbar-expand-sm bg-light justify-content-center">
+                    <a class="navbar-brand" href="#">{"YEW Demo"}</a>
+                    <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <RouterAnchor<AppRoute> route=AppRoute::Page1> {"Page 1"} </RouterAnchor<AppRoute>>
+                    </li>
+                    <li class="nav-item">
+                        <RouterAnchor<AppRoute> route=AppRoute::Page2> {"Page 2"} </RouterAnchor<AppRoute>>
+                    </li>
+                    <li class="nav-item">
+                        <RouterAnchor<AppRoute> route=AppRoute::Page3> {"Page 3"} </RouterAnchor<AppRoute>>
+                    </li>
+                    </ul>
+                </nav>
+                <Router<AppRoute>
+                        render = Router::render(|switch: AppRoute| {
+                            match switch {
+                                AppRoute::Page1 => html!{ "Page 1" },
+                                AppRoute::Page2 => html!{"Page 2"},
+                                AppRoute::Page3 => html!{"Page 3"},
+                            }
+                        })
+                    />
             </>
         }
     }

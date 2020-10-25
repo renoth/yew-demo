@@ -8,13 +8,13 @@ impl Component for Navbar {
     type Message = ();
     type Properties = ();
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
         Self {
             link
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> bool {
+    fn update(&mut self, _msg: Self::Message) -> bool {
         true
     }
 
